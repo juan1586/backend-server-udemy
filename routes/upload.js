@@ -64,7 +64,7 @@ app.put('/:tipo/:id', (req, resp, next) => {
 
 
     // Mover archivo
-    var patch = `./uploads/${ tipo }/ ${ nombreArchivo }`;
+    var patch = `./uploads/${ tipo }/${ nombreArchivo }`;
 
     archivo.mv(patch, err => {
         if (err) {
@@ -103,7 +103,7 @@ function subirPorTipo(tipo, id, nombreArchivo, resp) {
             }
             // Si existe se elimina la img anterior.
             if (fs.existsSync(patchViejo)) {
-                fs.unlink(patchViejo);
+                fs.unlinkSync(patchViejo);
             }
 
             usuario.img = nombreArchivo;
@@ -118,10 +118,54 @@ function subirPorTipo(tipo, id, nombreArchivo, resp) {
         });
     }
     if (tipo === 'medicos') {
+        Medico.findById(id, (err, medico) => {
+            var patchViejo = `./uploads/medicos/${medico.img}`;
+            if (err) {
+                resp.status(500).json({
+                    ok: true,
+                    mensaje: 'Error al actualizar imagen de medico',
+                    errors: err
+                })
+            }
 
+            if (fs.existsSync(patchViejo)) {
+                fs.unlinkSync(patchViejo);
+            }
+
+            medico.img = nombreArchivo;
+            medico.save((err, medicoActualizado) => {
+                return resp.status(200).json({
+                    ok: true,
+                    mensaje: 'Imagen de medico actulaizada',
+                    medicoActualizado: medicoActualizado,
+                })
+            });
+
+        })
     }
     if (tipo === 'hospitales') {
+        Hospital.findById(id, (err, hospital) => {
+            var patchViejo = `./uploads/hospitales/${hospital.img}`;
+            if (err) {
+                resp.status(500).json({
+                    ok: true,
+                    mensaje: 'Error al actualizar imagen de hospital',
+                    errors: err
+                })
+            }
+            if (fs.existsSync(patchViejo)) {
+                fs.unlinkSync(patchViejo);
+            }
 
+            hospital.img = nombreArchivo;
+            hospital.save((err, hospitalActualizado) => {
+                return resp.status(200).json({
+                    ok: true,
+                    mensaje: 'Imagen de hospital actualizada',
+                    hospitalActualizado: hospitalActualizado,
+                })
+            });
+        })
     }
 }
 
