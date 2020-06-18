@@ -13,7 +13,7 @@ var Medico = require('../models/medico');
 var Hospital = require('../models/hospital');
 
 // default options
-app.use(fileUpload());
+app.use(fileUpload());  
 
 
 
@@ -92,6 +92,14 @@ app.put('/:tipo/:id', (req, resp, next) => {
 function subirPorTipo(tipo, id, nombreArchivo, resp) {
     if (tipo === 'usuarios') {
         Usuario.findById(id, (err, usuario) => {
+            if(!usuario){
+                return resp.status(400).json({
+                    ok: true,
+                    mensaje: 'Usuario no existe',
+                    erros: { message: 'Usuario no existe'}
+                })
+            }
+
             var patchViejo = './uploads/usuarios/' + usuario.img;
 
             if (err) {
@@ -109,6 +117,7 @@ function subirPorTipo(tipo, id, nombreArchivo, resp) {
             usuario.img = nombreArchivo;
 
             usuario.save((err, usuarioActualizado) => {
+                usuarioActualizado.password = ':)';
                 return resp.status(200).json({
                     ok: true,
                     mensaje: 'Imagen de usuario actulaizada',
@@ -119,6 +128,14 @@ function subirPorTipo(tipo, id, nombreArchivo, resp) {
     }
     if (tipo === 'medicos') {
         Medico.findById(id, (err, medico) => {
+
+            if(!medico){
+                return resp.status(400).json({
+                    ok: true,
+                    mensaje: 'Medico no existe',
+                    erros: { message: 'Medico no existe'}
+                })
+            }
             var patchViejo = `./uploads/medicos/${medico.img}`;
             if (err) {
                 resp.status(500).json({
@@ -145,6 +162,14 @@ function subirPorTipo(tipo, id, nombreArchivo, resp) {
     }
     if (tipo === 'hospitales') {
         Hospital.findById(id, (err, hospital) => {
+
+            if(!hospital){
+                return resp.status(400).json({
+                    ok: true,
+                    mensaje: 'Hospital no existe',
+                    erros: { message: 'Hospital no existe'}
+                })
+            }
             var patchViejo = `./uploads/hospitales/${hospital.img}`;
             if (err) {
                 resp.status(500).json({

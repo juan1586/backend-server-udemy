@@ -23,6 +23,8 @@ var medicoRoutes = require('./routes/medico');
 var loginRoutes = require('./routes/login');
 var busquedaRoutes = require('./routes/busqueda');
 var uploadRoutes = require('./routes/upload');
+var imagenesRoutes = require('./routes/imagenes');
+
 
 
 // Coneccion DB
@@ -40,6 +42,7 @@ app.use('/medico', medicoRoutes);
 app.use('/login', loginRoutes);
 app.use('/busqueda', busquedaRoutes);
 app.use('/upload', uploadRoutes);
+app.use('/img', imagenesRoutes);
 app.use('/', appRoutes);
 
 
